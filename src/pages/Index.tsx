@@ -68,31 +68,62 @@ const Index = () => {
         </div>
       </nav>
 
-      {/* Hero Section */}
+      {/* HERO SECTION */}
       <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-            {/* Left Side - Headline */}
+          
+          {/* 👉 PJESA QENDRORE - TITULLI DHE TEKSTI I GJATË */}
+          <div className="text-center max-w-4xl mx-auto mb-16">
+            {/* Titulli kryesor */}
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-8">
+              Are You Ready to Secure Your Financial Future?
+            </h1>
+            
+            {/* 👉 TEKSTI I GJATË - NË QENDËR POSHTË TITULLIT */}
+            <div className="space-y-4">
+              <p className="text-lg md:text-xl text-slate-300 leading-relaxed">
+                In today's world, planning for the future is essential. SecurePro uses 
+                advanced AI technology to help you make informed decisions and secure 
+                your financial future.
+              </p>
+              <p className="text-lg md:text-xl text-slate-300 leading-relaxed">
+                Our intelligent tools guide you through smart investment choices, 
+                allowing you to protect and grow your savings with ease.
+              </p>
+            </div>
+          </div>
+          
+          {/* Grid me 2 kolona - majtas VIDEO, djathtas formular */}
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 mt-8">
+            
+            {/* LEFT SIDE - VIDEO 2.mp4 */}
             <div>
-              <div className="inline-flex items-center gap-2 bg-blue-950/50 border border-blue-800 rounded-full px-4 py-2 mb-8">
+              <div className="inline-flex items-center gap-2 bg-blue-950/50 border border-blue-800 rounded-full px-4 py-2 mb-6">
                 <Zap className="w-4 h-4 text-cyan-400" />
                 <span className="text-sm text-cyan-400">{t('hero.badge')}</span>
               </div>
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
-                {t('hero.title')}{" "}
-                <span className="bg-gradient-to-r from-blue-500 to-cyan-400 bg-clip-text text-transparent">
-                  {t('hero.titleHighlight')}
-                </span>
-              </h1>
-              <p className="text-base sm:text-lg text-slate-400 mb-6 leading-relaxed">
-                {t('hero.description1')}
-              </p>
-              <p className="text-base sm:text-lg text-slate-400 leading-relaxed">
-                {t('hero.description2')}
-              </p>
+              
+              {/* VIDEO - PA DOWNLOAD, PA PICTURE IN PICTURE */}
+              <div className="w-full bg-slate-800/50 border border-slate-700 rounded-xl p-6 sm:p-8 shadow-2xl">
+                <video 
+                  className="w-full h-[400px] object-cover rounded-lg"
+                  controls
+                  controlsList="nodownload"
+                  disablePictureInPicture
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                >
+                  <source src="/videos/2.mp4" type="video/mp4" />
+                  <p className="text-slate-400 p-4 text-center">
+                    Browser-i yt nuk e mbështet videon.
+                  </p>
+                </video>
+              </div>
             </div>
-
-            {/* Right Side - Registration Form */}
+            
+            {/* RIGHT SIDE - FORMULARI */}
             <div id="signup-form">
               <Card className="bg-slate-800/50 border-slate-700 p-6 sm:p-8">
                 <h2 className="text-2xl sm:text-3xl font-bold text-white mb-6 text-center">{t('form.title')}</h2>
@@ -154,38 +185,64 @@ const Index = () => {
         </div>
       </section>
 
-      {/* What is SecurePro Section */}
+      {/* WHAT IS SECUREPRO - TANI NË TË MAJTË */}
       <section className="py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6">
-              {t('what.title')}
-            </h2>
-            <p className="text-lg sm:text-xl text-cyan-400 mb-8 leading-relaxed">
-              {t('what.subtitle')}
-            </p>
-          </div>
-          
-          <div className="text-slate-300 space-y-6 leading-relaxed text-base sm:text-lg mb-10">
-            <p>
-              {t('what.p1')}
-            </p>
-            <p>
-              {t('what.p2')}
-            </p>
-            <p>
-              {t('what.p3')}
-            </p>
-          </div>
+        <div className="max-w-7xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-12 items-start">
+            
+            {/* LEFT SIDE - TEKSTI I WHAT IS SECUREPRO */}
+            <div className="text-left">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6">
+                What is SecurePro?
+              </h2>
+              
+              <div className="space-y-6 text-slate-300 leading-relaxed text-base sm:text-lg">
+                <p>
+                  Partnering with leading investment education firms, SecurePro provides free, 
+                  accessible financial knowledge to help you make informed decisions about your 
+                  financial future.
+                </p>
+                
+                <p>
+                  The necessity for financial education is universal. It's a fundamental aspect 
+                  of modern life. We require money to navigate the demands of our world. 
+                  Regrettably, a significant portion of the global population lacks financial 
+                  literacy.
+                </p>
+                
+                <p>
+                  This deficiency can lead to poor financial decisions, resulting in debt, 
+                  inadequate savings, and an uncertain future. Financial education is the key 
+                  to breaking this cycle.
+                </p>
+                
+                <p>
+                  It empowers individuals with the knowledge and skills needed to make informed 
+                  financial decisions, manage money effectively, and plan for a secure future.
+                </p>
+              </div>
 
-          <div className="text-center">
-            <Button 
-              size="lg"
-              onClick={() => document.getElementById('signup-form')?.scrollIntoView({ behavior: 'smooth' })}
-              className="bg-cyan-500 hover:bg-cyan-600 text-slate-950 font-medium text-lg px-8"
-            >
-              {t('cta.startJourney')}
-            </Button>
+              <div className="mt-10">
+                <Button 
+                  size="lg"
+                  onClick={() => document.getElementById('signup-form')?.scrollIntoView({ behavior: 'smooth' })}
+                  className="bg-cyan-500 hover:bg-cyan-600 text-slate-950 font-medium text-lg px-8"
+                >
+                  Start Your Journey Today!
+                </Button>
+              </div>
+            </div>
+            
+            {/* RIGHT SIDE - FOTO 1.JPG */}
+<div className="hidden lg:block">
+  <div className="w-full bg-slate-800/50 border border-slate-700 rounded-xl p-6 sm:p-8 shadow-2xl">
+    <img 
+      src="/images/1.jpg" 
+      alt="SecurePro Financial Security"
+      className="w-full h-[600px] object-cover rounded-lg"
+    />
+  </div>
+</div>
           </div>
         </div>
       </section>
