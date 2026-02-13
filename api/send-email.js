@@ -3,17 +3,17 @@ import express from 'express';
 
 const router = express.Router();
 
-// 🔥 KONFIGURIMI I SMTP (ZËVENDËSO KËTË PJESË)
+// Konfigurimi i SMTP
 const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST, // do të jetë smtp.hostinger.com
-  port: Number(process.env.SMTP_PORT), // 465
-  secure: true, // true për 465
+  host: process.env.SMTP_HOST,
+  port: Number(process.env.SMTP_PORT),
+  secure: true,
   auth: {
-    user: process.env.SMTP_USER, // noreply@getsecurepro.com
-    pass: process.env.SMTP_PASS, // fjalëkalimi yt
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS,
   },
   tls: {
-    rejectUnauthorized: false // opsional, ndihmon në disa raste
+    rejectUnauthorized: false
   }
 });
 
@@ -38,10 +38,9 @@ router.post('/submit-form', async (req, res) => {
       });
     }
 
-    // 📧 ONLY email to admin (noreply@getsecurepro.com)
     await transporter.sendMail({
       from: `"SecurePro Website" <${process.env.SMTP_USER}>`,
-      to: process.env.RECEIVER_EMAIL, // noreply@getsecurepro.com
+      to: process.env.RECEIVER_EMAIL,
       replyTo: email,
       subject: '🔐 New Registration - SecurePro',
       html: `
@@ -71,8 +70,6 @@ router.post('/submit-form', async (req, res) => {
         </div>
       `
     });
-
-    // ✅ NO email to user - ONLY admin notification
 
     res.json({ 
       success: true, 
