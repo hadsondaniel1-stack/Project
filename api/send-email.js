@@ -3,17 +3,17 @@ import express from 'express';
 
 const router = express.Router();
 
-// Konfigurimi i SMTP me Titan Email
+// 🔥 KONFIGURIMI I SMTP (ZËVENDËSO KËTË PJESË)
 const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || 'smtp.titan.email',
-  port: process.env.SMTP_PORT || 465,
-  secure: true,
+  host: process.env.SMTP_HOST, // do të jetë smtp.hostinger.com
+  port: Number(process.env.SMTP_PORT), // 465
+  secure: true, // true për 465
   auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS
+    user: process.env.SMTP_USER, // noreply@getsecurepro.com
+    pass: process.env.SMTP_PASS, // fjalëkalimi yt
   },
   tls: {
-    rejectUnauthorized: false
+    rejectUnauthorized: false // opsional, ndihmon në disa raste
   }
 });
 
