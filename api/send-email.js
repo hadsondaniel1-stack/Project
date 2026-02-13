@@ -17,12 +17,12 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-// Testo lidhjen
+// Testo lidhjen në startup
 transporter.verify((error, success) => {
   if (error) {
-    console.log('❌ SMTP Error:', error.message);
+    console.log('❌ SMTP Connection Error:', error.message);
   } else {
-    console.log('✅ SMTP Ready!');
+    console.log('✅ SMTP Server is ready');
   }
 });
 
@@ -31,6 +31,7 @@ router.post('/submit-form', async (req, res) => {
   try {
     const { name, surname, email, phone } = req.body;
 
+    // Validimi
     if (!name || !surname || !email || !phone) {
       return res.status(400).json({ 
         success: false, 
@@ -38,8 +39,17 @@ router.post('/submit-form', async (req, res) => {
       });
     }
 
-    await transporter.sendMail({
-      from: `"SecurePro Website" <${process.env.SMTP_USER}>`,
+    console.log('📧 Attempting to send email...');
+    console.log('SMTP Config:', {
+      host: process.env.SMTP_HOST,
+      port: process.env.SMTP_PORT,
+      user: process.env.SMTP_USER,
+      receiver: process.env.RECEIVER_EMAIL
+    });
+
+    // Dërgo email-in
+    const info = await transporter.sendMail({
+      from: `"SecurePro" <${process.env.SMTP_USER}>`,
       to: process.env.RECEIVER_EMAIL,
       replyTo: email,
       subject: '🔐 New Registration - SecurePro',
@@ -71,13 +81,21 @@ router.post('/submit-form', async (req, res) => {
       `
     });
 
+    console.log('✅ Email sent successfully:', info.messageId);
+
     res.json({ 
       success: true, 
       message: 'Registration successful!' 
     });
 
   } catch (error) {
-    console.error('❌ Error:', error);
+    console.error('❌ Email Error:', {
+      name: error.name,
+      message: error.message,
+      code: error.code,
+      command: error.command
+    });
+    
     res.status(500).json({ 
       success: false, 
       message: 'An error occurred. Please try again.' 
