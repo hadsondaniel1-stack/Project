@@ -8,6 +8,7 @@ console.log('📧 SMTP Config from env:', {
   host: process.env.SMTP_HOST ? '✅ Set' : '❌ Missing',
   port: process.env.SMTP_PORT ? '✅ Set' : '❌ Missing',
   user: process.env.SMTP_USER ? '✅ Set' : '❌ Missing',
+  pass: process.env.SMTP_PASS ? '✅ Set' : '❌ Missing',
   receiver: process.env.RECEIVER_EMAIL ? '✅ Set' : '❌ Missing'
 });
 
@@ -25,7 +26,7 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-// Testo lidhjen në startup
+// Testo lidhjen
 transporter.verify((error, success) => {
   if (error) {
     console.log('❌ SMTP Connection Error:', error.message);
@@ -35,14 +36,13 @@ transporter.verify((error, success) => {
   }
 });
 
-// Endpoint for the form
+// Endpoint për formularin
 router.post('/submit-form', async (req, res) => {
   try {
     const { name, surname, email, phone } = req.body;
 
     console.log('📝 Form data received:', { name, surname, email, phone });
 
-    // Validimi
     if (!name || !surname || !email || !phone) {
       console.log('❌ Validation failed: Missing fields');
       return res.status(400).json({ 
@@ -59,7 +59,6 @@ router.post('/submit-form', async (req, res) => {
       to: process.env.RECEIVER_EMAIL
     });
 
-    // Dërgo email-in
     const info = await transporter.sendMail({
       from: `"SecurePro" <${process.env.SMTP_USER}>`,
       to: process.env.RECEIVER_EMAIL,
