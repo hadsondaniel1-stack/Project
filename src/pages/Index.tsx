@@ -31,11 +31,33 @@ const Index = () => {
     setOpenFaq(openFaq === index ? null : index);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Form submitted:", formData);
-    navigate('/thank-you');
-  };
+  const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  
+  console.log("📝 Form submitted:", formData);
+  
+  try {
+    const response = await fetch('/api/submit-form', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    });
+
+    const data = await response.json();
+    console.log('✅ Server response:', data);
+    
+    if (data.success) {
+      navigate('/thank-you');
+    } else {
+      alert('Gabim: ' + data.message);
+    }
+  } catch (error) {
+    console.error('❌ Fetch error:', error);
+    alert('Gabim në lidhje me serverin. Ju lutemi provoni përsëri.');
+  }
+};
 
   const isFormValid = formData.name.trim() !== '' && 
                       formData.surname.trim() !== '' && 
