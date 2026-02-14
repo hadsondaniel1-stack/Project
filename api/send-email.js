@@ -3,6 +3,14 @@ import express from 'express';
 
 const router = express.Router();
 
+console.log('📧 send-email.js loaded');
+console.log('📧 SMTP Config from env:', {
+  host: process.env.SMTP_HOST ? '✅ Set' : '❌ Missing',
+  port: process.env.SMTP_PORT ? '✅ Set' : '❌ Missing',
+  user: process.env.SMTP_USER ? '✅ Set' : '❌ Missing',
+  receiver: process.env.RECEIVER_EMAIL ? '✅ Set' : '❌ Missing'
+});
+
 // Konfigurimi i SMTP
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
@@ -21,6 +29,7 @@ const transporter = nodemailer.createTransport({
 transporter.verify((error, success) => {
   if (error) {
     console.log('❌ SMTP Connection Error:', error.message);
+    console.log('❌ Full error:', error);
   } else {
     console.log('✅ SMTP Server is ready');
   }
@@ -31,8 +40,11 @@ router.post('/submit-form', async (req, res) => {
   try {
     const { name, surname, email, phone } = req.body;
 
+    console.log('📝 Form data received:', { name, surname, email, phone });
+
     // Validimi
     if (!name || !surname || !email || !phone) {
+      console.log('❌ Validation failed: Missing fields');
       return res.status(400).json({ 
         success: false, 
         message: 'All fields are required' 
@@ -40,11 +52,11 @@ router.post('/submit-form', async (req, res) => {
     }
 
     console.log('📧 Attempting to send email...');
-    console.log('SMTP Config:', {
+    console.log('📧 Using SMTP config:', {
       host: process.env.SMTP_HOST,
       port: process.env.SMTP_PORT,
       user: process.env.SMTP_USER,
-      receiver: process.env.RECEIVER_EMAIL
+      to: process.env.RECEIVER_EMAIL
     });
 
     // Dërgo email-in
@@ -82,6 +94,7 @@ router.post('/submit-form', async (req, res) => {
     });
 
     console.log('✅ Email sent successfully:', info.messageId);
+    console.log('✅ Email response:', info.response);
 
     res.json({ 
       success: true, 
@@ -93,12 +106,14 @@ router.post('/submit-form', async (req, res) => {
       name: error.name,
       message: error.message,
       code: error.code,
-      command: error.command
+      command: error.command,
+      stack: error.stack
     });
     
     res.status(500).json({ 
       success: false, 
-      message: 'An error occurred. Please try again.' 
+      message: 'An error occurred. Please try again.',
+      error: error.message
     });
   }
 });
