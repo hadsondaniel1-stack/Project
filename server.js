@@ -1,13 +1,13 @@
+// server.js
+import 'dotenv/config'; // ✅ ngarko .env MENJËHERË (para çdo importi tjetër)
+
 import express from 'express';
 import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
-import dotenv from 'dotenv';
-import emailRouter from './api/send-email.js';
 
-// Ngarko variablat nga .env
-dotenv.config();
+import emailRouter from './api/send-email.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -17,8 +17,7 @@ process.on('uncaughtException', (err) => {
   console.error('❌ Uncaught Exception:', err);
   console.error('❌ Stack:', err.stack);
 });
-
-process.on('unhandledRejection', (reason, promise) => {
+process.on('unhandledRejection', (reason) => {
   console.error('❌ Unhandled Rejection:', reason);
 });
 
@@ -31,21 +30,20 @@ try {
 }
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = Number(process.env.PORT || 3000);
 
-// Middleware për CORS
+// Middleware CORS
 app.use(cors({
   origin: '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
-
 app.options('*', cors());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Log çdo kërkese
+// Log çdo kërkesë
 app.use((req, res, next) => {
   console.log(`📨 ${req.method} ${req.url}`);
   next();
@@ -54,15 +52,14 @@ app.use((req, res, next) => {
 // API Routes
 app.use('/api', emailRouter);
 
-// Shërbe skedarët statikë
+// Shërbe dist vetëm nëse ekziston (pas build)
 app.use(express.static(path.join(__dirname, 'dist')));
 
-// Për React Router
+// SPA fallback
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 
-// Nis serverin
 app.listen(PORT, '0.0.0.0', () => {
   console.log('=================================');
   console.log(`🚀 Server is running on port ${PORT}`);
@@ -70,8 +67,5 @@ app.listen(PORT, '0.0.0.0', () => {
   console.log(`📁 Static files from: ${path.join(__dirname, 'dist')}`);
   console.log('=================================');
 });
-
-console.log('✅ Registered routes:');
-console.log('   - POST /api/submit-form');
 
 export default app;

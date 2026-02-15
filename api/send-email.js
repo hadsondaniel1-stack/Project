@@ -1,118 +1,87 @@
-import nodemailer from 'nodemailer';
-import express from 'express';
+import nodemailer from "nodemailer";
+import express from "express";
 
 const router = express.Router();
 
-console.log('📧 send-email.js loaded');
-console.log('📧 SMTP Config from env:', {
-  host: process.env.SMTP_HOST ? '✅ Set' : '❌ Missing',
-  port: process.env.SMTP_PORT ? '✅ Set' : '❌ Missing',
-  user: process.env.SMTP_USER ? '✅ Set' : '❌ Missing',
-  pass: process.env.SMTP_PASS ? '✅ Set' : '❌ Missing',
-  receiver: process.env.RECEIVER_EMAIL ? '✅ Set' : '❌ Missing'
+console.log("📧 send-email.js loaded");
+
+console.log("📧 SMTP Config from env:", {
+  host: process.env.SMTP_HOST || "❌ Missing",
+  port: process.env.SMTP_PORT || "❌ Missing",
+  user: process.env.SMTP_USER || "❌ Missing",
+  pass: process.env.SMTP_PASS ? "✅ Set" : "❌ Missing",
+  receiver: process.env.RECEIVER_EMAIL || "❌ Missing",
 });
 
-// Konfigurimi i SMTP
+
+// ✅ HOSTINGER SMTP CONFIG
 const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,    // smtp.gmail.com
-  port: Number(process.env.SMTP_PORT),  // Përdor portin 587
-  secure: false,  // Përdor STARTTLS për portin 587
+  host: process.env.SMTP_HOST,
+  port: Number(process.env.SMTP_PORT),
+  secure: true, // port 465 → TRUE
   auth: {
-    user: process.env.SMTP_USER,  // Emaili i përdoruesit (Gmail)
-    pass: process.env.SMTP_PASS,  // App password për Gmail (nëse ke 2FA aktivizuar)
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS,
   },
-  tls: {
-    rejectUnauthorized: false  // Përdor për të shmangur gabimet lidhur me certifikatat
-  }
 });
 
-// Testo lidhjen
-transporter.verify((error, success) => {
-  if (error) {
-    console.log('❌ SMTP Connection Error:', error.message);
-    console.log('❌ Full error:', error);
+
+// ✅ Test connection on start
+transporter.verify((err) => {
+  if (err) {
+    console.error("❌ SMTP ERROR:", err.message);
   } else {
-    console.log('✅ SMTP Server is ready');
+    console.log("✅ SMTP READY");
   }
 });
 
-// Endpoint për formularin
-router.post('/submit-form', async (req, res) => {
+
+// ✅ FORM ROUTE
+router.post("/submit-form", async (req, res) => {
   try {
     const { name, surname, email, phone } = req.body;
 
-    console.log('📝 Form data received:', { name, surname, email, phone });
-
     if (!name || !surname || !email || !phone) {
-      console.log('❌ Validation failed: Missing fields');
-      return res.status(400).json({ 
-        success: false, 
-        message: 'All fields are required' 
+      return res.status(400).json({
+        success: false,
+        message: "All fields required",
       });
     }
 
-    console.log('📧 Attempting to send email...');
-    console.log('📧 Using SMTP config:', {
-      host: process.env.SMTP_HOST,
-      port: process.env.SMTP_PORT,
-      user: process.env.SMTP_USER,
-      to: process.env.RECEIVER_EMAIL
+    console.log("📨 Sending email with data:", {
+      name,
+      surname,
+      email,
+      phone,
     });
 
     const info = await transporter.sendMail({
-      from: `"SecurePro" <${process.env.SMTP_USER}>`,  // Emaili nga ku do të dërgohet
-      to: process.env.RECEIVER_EMAIL,  // Emaili ku do të dërgohet formulari
-      replyTo: email,  // Emaili që do të kthehet në rast përgjigje
-      subject: '🔐 New Registration - SecurePro',
+      from: `"SecurePro Website" <${process.env.SMTP_USER}>`,
+      to: process.env.RECEIVER_EMAIL,
+      replyTo: email,
+      subject: "🔐 New SecurePro Lead",
       html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #06b6d4; border-radius: 10px;">
-          <h2 style="color: #06b6d4; text-align: center;">New SecurePro Registration</h2>
-          <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
-            <tr>
-              <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: bold;">Name:</td>
-              <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">${name}</td>
-            </tr>
-            <tr>
-              <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: bold;">Surname:</td>
-              <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">${surname}</td>
-            </tr>
-            <tr>
-              <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: bold;">Email:</td>
-              <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">${email}</td>
-            </tr>
-            <tr>
-              <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: bold;">Phone:</td>
-              <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">${phone}</td>
-            </tr>
-          </table>
-          <p style="color: #64748b; font-size: 12px; text-align: center; margin-top: 30px;">
-            This email was sent from getsecurepro.com
-          </p>
-        </div>
-      `
+        <h2>New SecurePro Registration</h2>
+        <p><b>Name:</b> ${name}</p>
+        <p><b>Surname:</b> ${surname}</p>
+        <p><b>Email:</b> ${email}</p>
+        <p><b>Phone:</b> ${phone}</p>
+      `,
     });
 
-    console.log('✅ Email sent successfully:', info.messageId);
-    console.log('✅ Email response:', info.response);
+    console.log("✅ EMAIL SENT:", info.messageId);
 
-    res.json({ 
-      success: true, 
-      message: 'Registration successful!' 
+    res.json({
+      success: true,
+      message: "Form submitted successfully",
     });
 
-  } catch (error) {
-    console.error('❌ Email Error:', {
-      name: error.name,
-      message: error.message,
-      code: error.code,
-      command: error.command,
-      stack: error.stack
-    });
-    
-    res.status(500).json({ 
-      success: false, 
-      message: 'An error occurred. Please try again.',
-      error: error.message
+  } catch (err) {
+    console.error("❌ EMAIL ERROR:", err);
+    res.status(500).json({
+      success: false,
+      message: "Email failed",
+      error: err.message,
     });
   }
 });
