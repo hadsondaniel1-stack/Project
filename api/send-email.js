@@ -14,15 +14,15 @@ console.log('📧 SMTP Config from env:', {
 
 // Konfigurimi i SMTP
 const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: Number(process.env.SMTP_PORT),
-  secure: true,
+  host: process.env.SMTP_HOST,    // smtp.gmail.com
+  port: Number(process.env.SMTP_PORT),  // Përdor portin 587
+  secure: false,  // Përdor STARTTLS për portin 587
   auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
+    user: process.env.SMTP_USER,  // Emaili i përdoruesit (Gmail)
+    pass: process.env.SMTP_PASS,  // App password për Gmail (nëse ke 2FA aktivizuar)
   },
   tls: {
-    rejectUnauthorized: false
+    rejectUnauthorized: false  // Përdor për të shmangur gabimet lidhur me certifikatat
   }
 });
 
@@ -60,9 +60,9 @@ router.post('/submit-form', async (req, res) => {
     });
 
     const info = await transporter.sendMail({
-      from: `"SecurePro" <${process.env.SMTP_USER}>`,
-      to: process.env.RECEIVER_EMAIL,
-      replyTo: email,
+      from: `"SecurePro" <${process.env.SMTP_USER}>`,  // Emaili nga ku do të dërgohet
+      to: process.env.RECEIVER_EMAIL,  // Emaili ku do të dërgohet formulari
+      replyTo: email,  // Emaili që do të kthehet në rast përgjigje
       subject: '🔐 New Registration - SecurePro',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #06b6d4; border-radius: 10px;">
