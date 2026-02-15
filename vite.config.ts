@@ -23,5 +23,7 @@ export default defineConfig({
       // Additional delay between file change detection and reload
       binaryInterval: 500,
     },
+    // Set the port for the server
+    port: 3002,  // Ndrysho portin këtu, për shembull 3001
   },
 });
